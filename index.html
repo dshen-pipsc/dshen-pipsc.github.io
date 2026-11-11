@@ -102,6 +102,8 @@
     }
     @media (prefers-reduced-motion:reduce){html {scroll-behavior:auto;}}
   </style>
+  <link rel="stylesheet" href="assets/member-engagement/reel.css">
+  <script src="assets/member-engagement/reel.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -150,6 +152,36 @@
         </div>
       </div>
     </section>
+<section class="engagement-reel" id="member-engagement" aria-labelledby="engagement-heading">
+  <div class="wrap">
+    <div class="er-head">
+      <p class="er-eyebrow">Member activities</p>
+      <h2 id="engagement-heading">Member Engagement Through the Years</h2>
+      <p class="er-desc">A chronological collection of event photographs, from 2022 to 2026.</p>
+    </div>
+    <div class="er-shell" data-engagement-reel tabindex="0" role="region" aria-label="Member engagement slideshow">
+      <div class="er-stage">
+        <img class="er-photo er-photo--visible" src="assets/member-engagement/event-01.webp" alt="Event photograph: Yearend Social Pool Hall, 8 December 2022." loading="eager" decoding="async">
+        <img class="er-photo" alt="" loading="lazy" decoding="async">
+      </div>
+      <div class="er-bottom">
+        <div class="er-caption-row">
+          <p class="er-caption" data-er-caption>Yearend Social Pool Hall</p>
+          <span class="er-date" data-er-date>8 Dec 2022</span>
+        </div>
+        <div class="er-controls">
+          <div class="er-actions">
+            <button class="er-button" type="button" data-er-prev aria-label="Previous photo">Previous</button>
+            <button class="er-button" type="button" data-er-toggle aria-pressed="true">Pause</button>
+            <button class="er-button" type="button" data-er-next aria-label="Next photo">Next</button>
+            <span class="er-count" data-er-count>1 / 16</span>
+          </div>
+          <div class="er-dots" data-er-dots aria-label="Select photograph"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
     <section class="content" id="experience" aria-labelledby="experience-heading">
       <div class="wrap">
         <div class="section-head">
@@ -234,7 +266,7 @@
     <section class="coming" aria-labelledby="coming-heading">
       <div class="wrap"><div class="note">
         <h3 id="coming-heading">More to come</h3>
-        <p>This website is a work in progress. Additional updates and a member engagement photo reel are planned as development continues. Thank you for visiting.</p>
+        <p>This website is a work in progress. Additional updates are planned as development continues. Thank you for visiting.</p>
       </div></div>
     </section>
   </main>

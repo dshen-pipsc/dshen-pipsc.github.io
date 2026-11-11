@@ -1,0 +1,27 @@
+/* Self-contained, homepage-only slideshow. */
+.engagement-reel {padding:76px 0;background:#f6f8f6;border-top:1px solid #e4eae6;border-bottom:1px solid #e4eae6;}
+.engagement-reel .er-head {margin:0 auto 26px;max-width:820px;}
+.engagement-reel .er-eyebrow {margin:0 0 9px;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:#17675c;font-weight:780;}
+.engagement-reel h2{margin:0 0 12px;color:#10283b;font-size:clamp(1.75rem,3.2vw,2.5rem);line-height:1.22;}
+.engagement-reel .er-desc {font-size:1rem;color:#526371;margin:0;}
+.er-shell {overflow:hidden;background:white;border:1px solid #dbe3dd;border-radius:12px;box-shadow:0 12px 34px rgba(16,40,59,.08);}
+.er-stage {position:relative;background:#142932;height:clamp(280px,44vw,565px);overflow:hidden;}
+.er-photo {position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 650ms ease;}
+.er-photo--visible {opacity:1;}
+.er-bottom {padding:15px clamp(15px,2.5vw,28px) 20px;}
+.er-caption-row {display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;justify-content:space-between;}
+.er-caption{margin:0;color:#10283b;font-size:clamp(1.03rem,2vw,1.22rem);font-weight:750;line-height:1.35;}
+.er-date{font-size:.85rem;color:#526371;white-space:nowrap;}
+.er-controls {display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;flex-wrap:wrap;}
+.er-actions {display:flex;align-items:center;gap:8px;}
+.er-button {cursor:pointer;font:700 .9rem/1.2 inherit;font-family:inherit;font-size:.84rem;border:1px solid #cad9d3;padding:9px 14px;min-height:40px;border-radius:6px;background:#fff;color:#10283b;}
+.er-button:hover,.er-button:focus-visible {background:#e8f3ee;}
+.er-count {margin-left:12px;color:#526371;font-variant-numeric:tabular-nums;font-size:.87rem;}
+.er-dots {max-width:45%;display:flex;justify-content:flex-end;flex-wrap:wrap;gap:5px;}
+.er-dots button {cursor:pointer;width:14px;height:14px;background:transparent;border:0;padding:0;display:grid;place-items:center;}
+.er-dots button::before{content:"";display:block;width:7px;height:7px;border-radius:50%;background:#b6c9c2;}
+.er-dots button[aria-current="true"]::before{background:#17675c;width:10px;height:10px;}
+.er-dots button:focus-visible{outline:2px solid #c59234;outline-offset:2px;}
+.er-notice {font-size:.78rem;color:#526371;margin:13px 0 0;}
+@media (max-width:640px) {.engagement-reel{padding:48px 0;} .er-stage {height:clamp(235px,62vw,370px);} .er-controls {gap:12px;} .er-dots {max-width:100%;justify-content:flex-start;} .er-button {padding:8px 11px;}}
+@media (prefers-reduced-motion:reduce){.er-photo {transition:none!important;}}
