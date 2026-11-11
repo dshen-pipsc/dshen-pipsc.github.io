@@ -210,9 +210,59 @@
    function setButton(){ var on=running && !userPaused; toggle.textContent=on ? "Pause" : "Play";toggle.setAttribute("aria-label",on?"Pause slideshow":"Play slideshow");toggle.setAttribute("aria-pressed",String(on)); }
    function clear(){if(interval){clearTimeout(interval);interval=null;}}
    function schedule(){clear(); if(!userPaused && inView && !document.hidden && photos.length>1){interval=setTimeout(function(){go(1,false);}, 2500);} setButton();}
-   function go(delta,manual){if(manual){userPaused=true;clear();} if(switching){return;} var wanted=(idx+delta+photos.length)%photos.length;if(wanted===idx){schedule();return;} switching=true;var other=1-layer;var img=frames[other];img.src=photos[wanted].image;img.alt=photos[wanted].alt;
-     var show=function(){ var old=frames[layer]; if(motion){img.style.transition="none";old.style.transition="none";} else {img.style.transition="opacity 650ms ease";old.style.transition="opacity 650ms ease";} img.classList.add("er-photo--visible");old.classList.remove("er-photo--visible");layer=other;idx=wanted;setCaption();setButton();setTimeout(function(){switching=false;schedule();},motion?0:670);};
-     if(img.complete && img.naturalWidth) show(); else {img.onload=show;img.onerror=function(){ switching=false; schedule();};}
+   // Wraps both directions: Next on photo 16 returns to photo 1.
+   // Only reveal a frame after its replacement image has loaded.
+   function go(delta, manual){
+     if(manual){userPaused=true; clear();}
+     if(switching){return;}
+     var wanted=((idx+delta)%photos.length+photos.length)%photos.length;
+     if(wanted===idx){schedule();return;}
+
+     switching=true;
+     var other=1-layer;
+     var img=frames[other];
+     var old=frames[layer];
+     var done=false;
+
+     function show(){
+       if(done){return;}
+       done=true;
+       img.onload=null;
+       img.onerror=null;
+       if(motion){
+         img.style.transition="none";
+         old.style.transition="none";
+       } else {
+         img.style.transition="opacity 650ms ease";
+         old.style.transition="opacity 650ms ease";
+       }
+       img.classList.add("er-photo--visible");
+       old.classList.remove("er-photo--visible");
+       layer=other;
+       idx=wanted;
+       setCaption();
+       setButton();
+       setTimeout(function(){switching=false;schedule();},motion?0:670);
+     }
+
+     function loadFailed(){
+       if(done){return;}
+       img.onload=null;
+       img.onerror=null;
+       switching=false;
+       // Keep the old, already loaded photograph visible on failure.
+       console.warn("Unable to load slideshow photo:", photos[wanted].image);
+       schedule();
+     }
+
+     // Set callbacks BEFORE the source; disabled lazy-loading prevents a
+     // hidden frame from being deferred by some mobile browsers.
+     img.onload=function(){if(img.naturalWidth>0){show();}else{loadFailed();}};
+     img.onerror=loadFailed;
+     img.loading="eager";
+     img.alt=photos[wanted].alt;
+     img.src=photos[wanted].image;
+     if(img.complete && img.naturalWidth>0){show();}
    }
    photos.forEach(function(p,i){ var btn=document.createElement("button"); btn.type="button";btn.setAttribute("aria-label","Show photograph "+(i+1)+": "+p.event);btn.title=p.date+" — "+p.event;btn.addEventListener("click",function(){go(i-idx,true);});dots.appendChild(btn);});
    frames[0].src=photos[0].image;frames[0].alt=photos[0].alt;frames[0].classList.add("er-photo--visible");setCaption();
