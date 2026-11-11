@@ -203,18 +203,26 @@
    var prev = root.querySelector("[data-er-prev]");
    var next = root.querySelector("[data-er-next]");
    var toggle = root.querySelector("[data-er-toggle]");
-   var idx=0, layer=0, running=false, interval=null, switching=false, inView=true;
+   var idx=0, layer=0, running=false, interval=null, switching=false, inView=true, queuedDelta=0;
    var motion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
    var userPaused=motion;
    function setCaption(){ caption.textContent=photos[idx].event; date.textContent=photos[idx].date; count.textContent=(idx+1)+" / "+photos.length; dots.querySelectorAll("button").forEach(function(b,i){b.setAttribute("aria-current",String(i===idx));}); }
    function setButton(){ var on=running && !userPaused; toggle.textContent=on ? "Pause" : "Play";toggle.setAttribute("aria-label",on?"Pause slideshow":"Play slideshow");toggle.setAttribute("aria-pressed",String(on)); }
    function clear(){if(interval){clearTimeout(interval);interval=null;}}
    function schedule(){clear(); if(!userPaused && inView && !document.hidden && photos.length>1){interval=setTimeout(function(){go(1,false);}, 2500);} setButton();}
-   // Wraps both directions: Next on photo 16 returns to photo 1.
-   // Only reveal a frame after its replacement image has loaded.
+   // Wraps in both directions. Queue manual clicks during an active fade
+   // so quick clicks on Previous/Next are not silently discarded.
+   function finish(){
+     switching=false;
+     if(queuedDelta){
+       var pending=queuedDelta;
+       queuedDelta=0;
+       go(pending,false);
+     } else {schedule();}
+   }
    function go(delta, manual){
      if(manual){userPaused=true; clear();}
-     if(switching){return;}
+     if(switching){if(manual){queuedDelta+=delta;}return;}
      var wanted=((idx+delta)%photos.length+photos.length)%photos.length;
      if(wanted===idx){schedule();return;}
 
@@ -242,17 +250,16 @@
        idx=wanted;
        setCaption();
        setButton();
-       setTimeout(function(){switching=false;schedule();},motion?0:670);
+       setTimeout(finish,motion?0:670);
      }
 
      function loadFailed(){
        if(done){return;}
        img.onload=null;
        img.onerror=null;
-       switching=false;
        // Keep the old, already loaded photograph visible on failure.
        console.warn("Unable to load slideshow photo:", photos[wanted].image);
-       schedule();
+       finish();
      }
 
      // Set callbacks BEFORE the source; disabled lazy-loading prevents a
@@ -272,7 +279,7 @@
    if("IntersectionObserver" in window){var observer=new IntersectionObserver(function(entries){inView=entries[0].isIntersecting;schedule();},{threshold:0.2});observer.observe(root);}
    document.addEventListener("visibilitychange",schedule);
    running=!motion; schedule();
-   // Next photo is prefetched after initial load; all 16 images remain private in the local package until you approve publishing.
+   // Image sources stay unchanged; only navigation handling differs.
  }
   document.querySelectorAll("[data-engagement-reel]").forEach(init);
 })();
